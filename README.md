@@ -50,25 +50,23 @@ const app = initializeApp(firebaseConfig);
 - Create a protected route component to restrict access to certain routes for authenticated users. You can use React Router for this.
 
 ```javascript
-import React from 'react';
-import { Redirect, Route } from 'react-router-dom';
+import React from "react";
+import { useSelector } from "react-redux";
+import { Navigate } from "react-router-dom";
 
-const ProtectedRoute = ({ component: Component, isAuthenticated, ...rest }) => {
-  return (
-    <Route
-      {...rest}
-      render={(props) =>
-        isAuthenticated ? (
-          <Component {...props} />
-        ) : (
-          <Redirect to="/login" />
-        )
-      }
-    />
-  );
+const ProtectedRoute = ({ children }) => {
+  const { isAuthenticated } = useSelector((state) => state.auth);
+
+  if (!isAuthenticated) {
+    // Check if the user is not authenticated and redirect to the login page
+    return <Navigate to="/login" />;
+  }
+
+  return children;
 };
 
 export default ProtectedRoute;
+
 ```
 
 **Step 7: App Routing**
